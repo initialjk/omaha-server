@@ -80,7 +80,7 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
     date = date or now()
 
     qs = Version.objects.select_related('app')
-    qs = qs.filter_by_enabled(app=app_id,
+    qs = qs.filter_by_enabled(app=app_id.upper(),
                               platform__name=platform,
                               channel__name=channel)
     qs = qs.filter(version__gt=version) if version else qs

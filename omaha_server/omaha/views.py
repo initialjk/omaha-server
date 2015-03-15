@@ -43,7 +43,7 @@ class UpdateView(View):
     def post(self, request):
         try:
             response = build_response(request.body)
-        except XMLSyntaxError:
+        except XMLSyntaxError as e:
             logger.error('UpdateView', exc_info=True, extra=dict(request=request))
-            return HttpResponse('bad request', status=400, content_type="text/html; charset=utf-8")
+            return HttpResponse(e, status=400, content_type="text/html; charset=utf-8")
         return HttpResponse(response, content_type="text/xml; charset=utf-8")

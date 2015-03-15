@@ -16,6 +16,7 @@
     <xs:simpleType name="PlatformType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="win"/>
+            <xs:enumeration value="Windows"/>
             <xs:enumeration value="mac"/>
             <xs:enumeration value="ios"/>
         </xs:restriction>
@@ -24,6 +25,7 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="x86"/>
             <xs:enumeration value="x64"/>
+            <xs:enumeration value="x86_64"/>
             <xs:enumeration value="arm"/>
         </xs:restriction>
     </xs:simpleType>
@@ -41,15 +43,22 @@
             </xs:choice>
             <xs:attribute name='protocol' use='required' type='xs:decimal' fixed="3.0"/>
             <xs:attribute name='version' use='required' type='xs:NMTOKEN'/>
-            <xs:attribute name='ismachine' use='required' type='IsMachineType'/>
+            <xs:attribute name='prodversion' use='optional' type='xs:NMTOKEN'/>
+            <xs:attribute name='ismachine' use='optional' type='IsMachineType'/>
             <xs:attribute name='requestid' type='GuidType' use='required'/>
-            <xs:attribute name='sessionid' type='GuidType' use='required'/>
+            <xs:attribute name='sessionid' type='GuidType' use='optional'/>
             <xs:attribute name='userid' type='GuidType' use="optional"/>
             <xs:attribute name='installsource' type="xs:NCName" use="optional"/>
             <xs:attribute name='originurl' type="xs:string" use="optional"/>
             <xs:attribute name='testsource' type='xs:NCName' use="optional"/>
             <xs:attribute name='dedup' type='xs:NCName' use="optional"/>
+            <xs:attribute name='lang' use='optional' type='xs:string'/>
             <xs:attribute name='updaterchannel' type='xs:NCName' use="optional"/>
+	    <xs:attribute name='prodchannel' type='xs:NCName' use="optional"/>
+	    <xs:attribute name='os' type='xs:string' use="optional"/>
+            <xs:attribute name='arch' type='xs:NCName' use="optional"/>
+            <xs:attribute name='nacl_arch' type='xs:NCName' use="optional"/>
+            <xs:attribute name='wow64' type='xs:integer' use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="hw">
@@ -68,7 +77,7 @@
         <xs:complexType>
             <xs:attribute name='platform' use='required' type='PlatformType'/>
             <xs:attribute name='version' use='required' type='xs:string'/>
-            <xs:attribute name='sp' type="xs:string" use='required'/>
+            <xs:attribute name='sp' type="xs:string" use='optional'/>
             <xs:attribute name='arch' use='required' type='xs:NCName'/>
         </xs:complexType>
     </xs:element>
@@ -80,12 +89,12 @@
                 <xs:element ref='event' minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref='data' minOccurs="0" maxOccurs="unbounded"/>
             </xs:choice>
-            <xs:attribute name='appid' use='required' type="GuidType"/>
+            <xs:attribute name='appid' use='required' type="xs:string"/>
             <xs:attribute name='version' use='required' type='xs:string'/>
-            <xs:attribute name='nextversion' use='required'/>
-            <xs:attribute name='lang' use='required' type='xs:string'/>
-            <xs:attribute name='brand' use='required' type='xs:string'/>
-            <xs:attribute name='client' use='required' type="xs:string"/>
+            <xs:attribute name='nextversion' use='optional'/>
+            <xs:attribute name='lang' use='optional' type='xs:string'/>
+            <xs:attribute name='brand' use='optional' type='xs:string'/>
+            <xs:attribute name='client' use='optional' type="xs:string"/>
             <xs:attribute name='ap' use='optional' type="xs:string"/>
             <xs:attribute name='experiments' use='optional' type="xs:string"/>
             <xs:attribute name='iid' use='optional' type="GuidType"/>
