@@ -35,6 +35,7 @@ from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event, Data)
 
+HOSTNAME='omaha.sdock.net:9090'
 
 __all__ = ['build_response']
 
@@ -148,7 +149,7 @@ def on_app(apps_list, app, os, userid):
     if updatecheck:
         actions = reduce(on_action, version.actions.all(), [])
         updatecheck = Updatecheck_positive(
-            urls=[version.file_url],
+            urls=["http://" + HOSTNAME + version.file_url],
             manifest=Manifest(
                 version=str(version.version),
                 packages=Packages([Package(
