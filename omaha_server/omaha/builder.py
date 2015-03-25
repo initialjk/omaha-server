@@ -126,10 +126,28 @@ def get_version(app_id, platform, channel, version, userid, date=None):
     return new_version
 
 
+import os
+import base64
+import hashlib
+def fill_package_info(file_path):
+    file_name = os.path.basename(file_path);
+    file_hash = ''
+    file_size = 0
+    file_path = os.getcwd() + file_path
+    
+    if os.path.isfile( file_path ):
+        with open(file_path) as f:
+            file_hash = base64.b64encode( hashlib.sha1(f.read()).digest() )
+            file_size = f.tell()
+
+    return { 'name': file_name, 'size': str(file_size), 'hash': file_hash }
+
+    
 def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
+    brand = app.get('brand') or 'GGPoker'
     channel = app.get('tag') or DEFAULT_CHANNEL
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
@@ -148,16 +166,17 @@ def on_app(apps_list, app, os, userid):
 
     if updatecheck:
         actions = reduce(on_action, version.actions.all(), [])
+        packages=[ Package( name=version.file_package_name, required='true', size=str(version.file_size), hash=version.file_hash) ]
+        if "installer" in version.app.name:
+            for p in ['package.json', 'main.ico']:
+                pinfo = fill_package_info( version.file_url + p )
+                packages.append( Package( name=pinfo['name'], required='true', size=pinfo['size'], hash=pinfo['hash'] ) )
+        
         updatecheck = Updatecheck_positive(
             urls=["http://" + HOSTNAME + version.file_url],
             manifest=Manifest(
                 version=str(version.version),
-                packages=Packages([Package(
-                    name=version.file_package_name,
-                    required='true',
-                    size=str(version.file_size),
-                    hash=version.file_hash,
-                )]),
+                packages=Packages(packages),
                 actions=Actions(actions) if actions else None,
             )
         )
