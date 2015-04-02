@@ -35,8 +35,6 @@ from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event, Data)
 
-HOSTNAME='omaha.sdock.net:9090'
-
 __all__ = ['build_response']
 
 
@@ -171,9 +169,13 @@ def on_app(apps_list, app, os, userid):
             for p in ['package.json', 'main.ico']:
                 pinfo = fill_package_info( version.file_url + p )
                 packages.append( Package( name=pinfo['name'], required='true', size=pinfo['size'], hash=pinfo['hash'] ) )
-        
+
         updatecheck = Updatecheck_positive(
-            urls=["http://" + HOSTNAME + version.file_url],
+            urls=[
+                "http://portal-update.good-game-network.com" + version.file_url,
+                "http://download.ggnet.com" + version.file_url,
+                #"http://omaha.sdock.net:9090" + version.file_url,
+            ],
             manifest=Manifest(
                 version=str(version.version),
                 packages=Packages(packages),
